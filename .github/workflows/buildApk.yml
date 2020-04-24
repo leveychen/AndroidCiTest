@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    # 此处指定需要编译的分支，以master为例
+    branches: [ master ]
+  pull_request:
+    # 同上
+    branches: [ master ]
+
+# 定义一个任务组
+jobs:
+  # 定义任务名称，默认为build，可以修改为任意字符串方便识别
+  buildAndUploadApk:
+    # 此处定义运行的系统版本，默认为 ubuntu-latest
+    runs-on: ubuntu-latest
+    # 设置步骤
+    steps:
+    # 检出代码，此处actions/checkout@v2为官方提供的脚本， uses 即为引用，可以引用其他更多github大佬编写的action脚本
+    - uses: actions/checkout@v2
+
+    # 设置java sdk版本，此处引用官方actions/setup-java@v1 脚本，版本设置为1.8，若使用JDK 11，则java-version:11，余同
+    - name: set java sdk
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    # 开始编译APK，调用gradle命令，此处以打包 release 包为例，多渠道则 assembleABC ,并打印日志(方便错误追踪)
+    - name: build apk
+      run: bash ./gradlew assembleRelease --stacktrace
+    # 将编译好的apk 推到仓库中的artifacts里
+    - name: Create APK artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: app
+        # 不同渠道对应不同apk文件路径，按实际情况填写
+        path: app/build/outputs/apk/release/app-release.apk
