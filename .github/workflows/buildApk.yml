@@ -36,5 +36,8 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: app
-        # 不同渠道对应不同apk文件路径，按实际情况填写
-        path: app/build/outputs/apk/release/app-release.apk
+        # 不同渠道对应不同apk文件路径，按实际情况填写，
+        # 此处没有签名，默认编译的apk名称为app-release-unsigned.apk 若已进行签名，则为 app-release.apk
+        path: app/build/outputs/apk/release/app-release-unsigned.apk
+        # path: app/build/outputs/apk/release/app-release.apk
+        # path: app/build/outputs/apk/debug/app-debug-unsigned.apk
